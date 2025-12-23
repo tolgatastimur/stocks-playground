@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Stocksplayground">
+        android:theme="@style/Theme.Stocksplayground"
+        android:name=".StocksPlaygroundApp">
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

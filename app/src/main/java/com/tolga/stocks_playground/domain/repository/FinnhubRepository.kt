@@ -2,6 +2,7 @@ package com.tolga.stocks_playground.domain.repository
 
 import com.tolga.stocks_playground.data.remote.dto.CandleResponse
 import com.tolga.stocks_playground.data.remote.dto.CompanyProfileDto
+import com.tolga.stocks_playground.data.remote.dto.IndexConstituentsResponse
 import com.tolga.stocks_playground.data.remote.dto.NewsDto
 import com.tolga.stocks_playground.data.remote.dto.QuoteDto
 import com.tolga.stocks_playground.data.remote.dto.SymbolLookupResponse
@@ -25,5 +26,7 @@ interface FinnhubRepository {
         from: String,
         to: String
     ): List<NewsDto>
+
+    suspend fun getIndexConstituents(symbol: String): IndexConstituentsResponse
 }
 

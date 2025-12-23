@@ -1,20 +1,13 @@
 package com.tolga.stocks_playground.data.remote
 
-import com.tolga.stocks_playground.BuildConfig
 import com.tolga.stocks_playground.data.remote.dto.CandleResponse
 import com.tolga.stocks_playground.data.remote.dto.CompanyProfileDto
+import com.tolga.stocks_playground.data.remote.dto.IndexConstituentsResponse
 import com.tolga.stocks_playground.data.remote.dto.NewsDto
 import com.tolga.stocks_playground.data.remote.dto.QuoteDto
 import com.tolga.stocks_playground.data.remote.dto.SymbolLookupResponse
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 interface FinnhubApi {
     @GET("quote")
@@ -47,46 +40,9 @@ interface FinnhubApi {
         @Query("to") to: String
     ): List<NewsDto>
 
-    companion object {
-        private const val BASE_URL = "https://finnhub.io/api/v1/"
-
-        fun create(
-            apiKey: String = BuildConfig.FINNHUB_API_KEY,
-            enableLogging: Boolean = true
-        ): FinnhubApi {
-            val authInterceptor = Interceptor { chain ->
-                val original = chain.request()
-                val updatedUrl = original.url.newBuilder()
-                    .addQueryParameter("token", apiKey)
-                    .build()
-                val updated = original.newBuilder()
-                    .url(updatedUrl)
-                    .build()
-                chain.proceed(updated)
-            }
-
-            val clientBuilder = OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-
-            if (enableLogging) {
-                val logging = HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
-                }
-                clientBuilder.addInterceptor(logging)
-            }
-
-            val moshi = Moshi.Builder()
-                .addLast(KotlinJsonAdapterFactory())
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(clientBuilder.build())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-
-            return retrofit.create(FinnhubApi::class.java)
-        }
-    }
+    @GET("index/constituents")
+    suspend fun getIndexConstituents(
+        @Query("symbol") symbol: String
+    ): IndexConstituentsResponse
 }
 

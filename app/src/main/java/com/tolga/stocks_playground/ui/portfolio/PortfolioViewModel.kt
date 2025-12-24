@@ -39,12 +39,13 @@ class PortfolioViewModel @Inject constructor(
             }
 
             result.onSuccess { quotes ->
+                val stockQuotes = QuoteMapper.toStockQuoteUiList(quotes)
                 Log.d(
                     "PortfolioViewModel",
-                    "Loaded quotes for symbols: ${quotes.keys.joinToString()}"
+                    "Loaded quotes for symbols: ${quotes.keys.joinToString()}, mapped to ${stockQuotes.size} stock quotes"
                 )
                 _uiState.value = _uiState.value.copy(
-                    quotes = quotes,
+                    stockQuotes = stockQuotes,
                     isLoading = false,
                     error = null
                 )

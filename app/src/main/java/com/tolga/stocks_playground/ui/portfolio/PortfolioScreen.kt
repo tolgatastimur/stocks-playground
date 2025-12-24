@@ -8,13 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDownward
+import androidx.compose.material.icons.outlined.ArrowUpward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,20 +30,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tolga.stocks_playground.ui.theme.BlueBackground
+import com.tolga.stocks_playground.ui.theme.GreenBackground
 
 @Composable
 fun PortfolioScreen(viewModel: PortfolioViewModel = hiltViewModel()) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiStateStocks.collectAsState()
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            StocksHeader(viewModel)
             Row(modifier = Modifier.padding(16.dp)) {
-                Text("My Stocks")
+                Text(
+                    text = "My Stocks",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
                 Spacer(modifier = Modifier.weight(1f))
-                Text("View All")
+                Text(
+                    text = "View All", color = BlueBackground, style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
@@ -49,6 +67,107 @@ fun PortfolioScreen(viewModel: PortfolioViewModel = hiltViewModel()) {
         }
     }
 }
+
+@Composable
+fun StocksHeader(viewModel: PortfolioViewModel) {
+    val uiState by viewModel.uiStateHeader.collectAsState()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Portfolio",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(BlueBackground)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                modifier = Modifier.padding(top = 12.dp),
+                text = "Total Portfolio Value",
+                color = Color.White,
+                fontSize = 16.sp
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = uiState.friendlyTotalValue,
+                color = Color.White,
+                fontSize = 48.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PricePill(
+                    uiState.friendlyGainLoss,
+                    modifier = Modifier.padding(top = 6.dp),
+                    isUp = uiState.totalGainLoss >= 0
+                )
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = uiState.friendlyGainLossPercent,
+                    color = GreenBackground,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PricePill(
+    text: String,
+    isUp: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val contentColor = GreenBackground
+    val pillColor = GreenBackground.copy(alpha = 0.20f)
+    val icon = if (isUp) Icons.Outlined.ArrowUpward else Icons.Outlined.ArrowDownward
+
+    Row(
+        modifier = modifier
+            .height(70.dp)
+            .padding(end = 8.dp, top = 12.dp, bottom = 12.dp)
+            .clip(RoundedCornerShape(100.dp))    // capsule ends
+            .background(pillColor)
+            .padding(horizontal = 16.dp),        // inner padding
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = contentColor,
+            modifier = Modifier.size(24.dp)
+        )
+
+        Spacer(Modifier.width(4.dp))
+
+        Text(
+            text = text,
+            color = contentColor,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.SemiBold
+            )
+        )
+    }
+}
+
 
 @Composable
 fun StocksCard(quote: StockQuoteUi) {

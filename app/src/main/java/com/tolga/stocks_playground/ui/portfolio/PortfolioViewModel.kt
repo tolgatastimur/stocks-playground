@@ -27,7 +27,12 @@ class PortfolioViewModel @Inject constructor(
     val uiStateHeader: StateFlow<PortfolioHeaderUiState> = _uiStateHeader.asStateFlow()
 
     init {
-        loadQuotesForSymbols()
+        // Only load quotes if user has holdings, otherwise show empty state
+        val userHoldings = userProfileSession.userProfile.holdings
+        if (userHoldings.isNotEmpty()) {
+            val symbols = userHoldings.map { it.symbol }
+            loadQuotesForSymbols(symbols)
+        }
     }
 
     fun loadQuotesForSymbols(

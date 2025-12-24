@@ -3,6 +3,8 @@ package com.tolga.stocks_playground.ui.portfolio
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tolga.stocks_playground.domain.model.MockUserProfile
+import com.tolga.stocks_playground.domain.model.UserProfileSession
 import com.tolga.stocks_playground.domain.repository.FinnhubRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PortfolioViewModel @Inject constructor(
-    private val finnhubRepository: FinnhubRepository
+    private val finnhubRepository: FinnhubRepository,
+    private val userProfileSession: UserProfileSession
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(PortfolioUiState())
@@ -43,6 +46,11 @@ class PortfolioViewModel @Inject constructor(
                 Log.d(
                     "PortfolioViewModel",
                     "Loaded quotes for symbols: ${quotes.keys.joinToString()}, mapped to ${stockQuotes.size} stock quotes"
+                )
+
+                Log.d(
+                    "PortfolioViewModel",
+                    "User holdings: ${userProfileSession.userProfile.holdings}"
                 )
                 _uiState.value = _uiState.value.copy(
                     stockQuotes = stockQuotes,

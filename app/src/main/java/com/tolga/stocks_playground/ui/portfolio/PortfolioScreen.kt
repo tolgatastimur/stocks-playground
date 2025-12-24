@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,8 +62,9 @@ fun PortfolioScreen(viewModel: PortfolioViewModel = hiltViewModel()) {
                 )
             }
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                uiState.stockQuotes.forEach { item ->
+            LazyColumn {
+                items(uiState.stockQuotes){
+                    item ->
                     StocksCard(quote = item)
                 }
             }
@@ -184,7 +188,13 @@ fun StocksCard(quote: StockQuoteUi) {
         Row(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             CircleTextAvatar(quote.stockName)
             Spacer(Modifier.width(8.dp))
-            Text(modifier = Modifier.padding(start = 8.dp, top = 8.dp), text = quote.stockName)
+            Text(
+                modifier = Modifier.padding(start = 8.dp, top = 8.dp),
+                text = quote.stockName,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
             Spacer(Modifier.weight(1f))
             Column {
                 Text(
@@ -196,7 +206,7 @@ fun StocksCard(quote: StockQuoteUi) {
                     modifier = Modifier.align(Alignment.End),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    androidx.compose.material3.Icon(
+                    Icon(
                         modifier = Modifier.size(12.dp),
                         imageVector = quote.changeIcon,
                         contentDescription = null,

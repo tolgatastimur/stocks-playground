@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             StocksplaygroundTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PortfolioScreen()
+                    AppRootNavigation()
                 }
             }
         }

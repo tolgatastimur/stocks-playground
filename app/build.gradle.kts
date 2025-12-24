@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     kotlin("kapt")
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 val finnhubApiKey: String = (project.findProperty("FINNHUB_API_KEY") as? String)
@@ -64,6 +65,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation3:navigation3-runtime:1.1.0-alpha01")
+    implementation("androidx.navigation3:navigation3-ui:1.1.0-alpha01")
+    implementation(libs.kotlinx.serialization.core)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
